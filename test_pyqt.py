@@ -35,7 +35,7 @@ class App(QMainWindow):
 
     def createSettings(self):
         self.commandsVBox = QVBoxLayout()
-        settingTraceVBox = QVBoxLayout()
+        self.rightSide = QVBoxLayout()
         cmdLabelList = [QLineEdit(cmd) for cmd in self.listOfCommands]
         for c in cmdLabelList:
             c.setFixedWidth(300)
@@ -65,8 +65,9 @@ class App(QMainWindow):
         connectionVbox.addStretch(1)
         settingHBox.addLayout(flo)
         settingHBox.addLayout(connectionVbox)
+        self.rightSide.addLayout(settingHBox)
         self.hbox.addLayout(self.commandsVBox)
-        self.hbox.addLayout(settingHBox)
+        self.hbox.addLayout(self.rightSide)
 
         addCommandAction = QAction(QIcon('add.png'), 'Add Command', self)
         addCommandAction.setShortcut('Ctrl+1')
@@ -81,6 +82,22 @@ class App(QMainWindow):
         toolbar = self.addToolBar('Add Command')
         toolbar.addAction(addCommandAction)
         toolbar.addAction(saveFileAction)
+
+        traceVBox = QVBoxLayout()
+        w = QWidget()
+        w.resize(420, 200)
+        receiveBox = QPlainTextEdit(w)
+        receiveBox.setPlainText('Hello\rWorld')
+        receiveBox.setReadOnly(True)
+        receiveBox.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+        transmitBox = QPlainTextEdit(w)
+        transmitBox.setReadOnly(True)
+        transmitBox.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+        traceVBox.addWidget(QLabel('Receive'))
+        traceVBox.addWidget(receiveBox)
+        traceVBox.addWidget(QLabel('Transmit'))
+        traceVBox.addWidget(transmitBox)
+        self.rightSide.addLayout(traceVBox)
 
     def connectClicked(self):
         self.statusBar().showMessage("Connected")
