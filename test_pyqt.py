@@ -34,12 +34,14 @@ class App(QMainWindow):
         self.setCentralWidget(self.widget)
 
     def createSettings(self):
+        self.setAcceptDrops(False)
         self.commandsVBox = QVBoxLayout()
         self.rightSide = QVBoxLayout()
-        cmdLabelList = [QLineEdit(cmd) for cmd in self.listOfCommands]
+        cmdLabelList = [QLabel(cmd) for cmd in self.listOfCommands]
         for c in cmdLabelList:
             c.setFixedWidth(300)
             self.commandsVBox.addWidget(c)
+            self.commandsVBox.addWidget(QLineEdit())
 
         ipLineEdit = QLineEdit()
         ipLineEdit.setText(self.IPAddr)
@@ -67,6 +69,7 @@ class App(QMainWindow):
         settingHBox.addLayout(connectionVbox)
         self.rightSide.addLayout(settingHBox)
         self.hbox.addLayout(self.commandsVBox)
+        self.hbox.addSpacing(15)
         self.hbox.addLayout(self.rightSide)
 
         addCommandAction = QAction(QIcon('add.png'), 'Add Command', self)
