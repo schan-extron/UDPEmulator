@@ -6,6 +6,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import json
 import socket
+from CustomJsonParser import customJsonParser
 
 
 class App(QMainWindow):
@@ -126,10 +127,15 @@ class App(QMainWindow):
         print(event.mimeData().text())
         with open(event.mimeData().text()[8:]) as file:
             data = json.load(file)
-        self.listOfCommands = data['Models']['General']['AvailableItems']['Commands']
-        self.port = str(data['Protocols'][0]['Port'])
+
+        json_parser_obj = customJsonParser(data)
+        json_parser_obj.storeModelsAndCommands()
+
+        self.listOfCommands = list(json_parser_obj.commands.keys())
+        print('here', self.listOfCommands)
+        print(data)
+        self.port = str(data['Protocols'][1]['Port'])
         print(self.port)
-        print(self.listOfCommands)
         self.label.clear()
         self.createSettings()
 
