@@ -37,49 +37,54 @@ class App(QMainWindow):
         self.hbox.addWidget(self.label)
         self.setCentralWidget(self.widget)
 
-    def createSettings(self):
+    def create_main_layout(self):
         self.setAcceptDrops(False)
 
         # Create combo box for HTTP request type
+        #TODO not used right now
         self.dropdownBox = QComboBox()
         self.dropdownBox.addItems(['GET', 'POST', 'PUT'])
 
-
-
-
-        # Container Widget
+        # Most-Outer Container Widget
         widget = QWidget()
+
+        # Most-Outer VBoxLayout
+        outtermostVBox = QVBoxLayout(self)
+
         # Layout of Container Widget
         commandsVBox = QVBoxLayout(self)
-        buttonsLayoutWidget = QGridLayout()
+        # buttonsLayoutWidget = QGridLayout()
 
         for command in self.listOfCommands:
             if type(self.commandStateDict[command]) is dict:
                 print(command + ' has a dict')
             else:
-                commandLabel = QLabel(command)
-                commandLabel.setFixedWidth(300)
-                commandsVBox.addWidget(commandLabel)
-                #commandsVBox.addWidget(QLineEdit())
+                commandPushButton = QPushButton(command)
+                commandsVBox.addWidget(commandPushButton)
 
-                tempStateList = self.commandStateDict[command]
+                radiolayout = QHBoxLayout()
+                radioGroupBox = QGroupBox()
+                for state in self.commandStateDict[command]:
+                    radioBtn = QRadioButton(state)
+                    radioGroupBox
+                    # radioGroup.addAction(radioBtn)
+                    radiolayout.addWidget(radioBtn)
+                commandsVBox.addLayout(radiolayout)
 
-                buttonGroup = QButtonGroup()
-                buttonGroup.setExclusive(True)
-                for state in range(0, len(tempStateList)):
-                    button = QPushButton(tempStateList[state], checkable=True)
-                    self.saveStateButton(command + tempStateList[state], button)
-
-                    buttonGroup.addButton(button)
-                    button.clicked.connect(lambda: self.stateButtonClicked())
-                    commandsVBox.addWidget(button)
+                # buttonGroup = QButtonGroup()
+                # buttonGroup.setExclusive(True)
+                # for state in range(0, len(tempStateList)):
+                #     RadioButtonState = QRadioButton(tempStateList[state])
+                # #     # self.saveStateButton(command + tempStateList[state], RadioButtonState)
+                # #
+                #     # buttonGroup.addButton(RadioButtonState)
+                # #     RadioButtonState.clicked.connect(lambda: self.stateButtonClicked())
+                #     radiolayout.addWidget(RadioButtonState)
+                # commandsVBox.addWidget(radiolayout)
 
                 #commandsVBox.addWidget(buttonGroup)
                 #buttonGroup.buttonClicked(lambda: self.stateButtonClicked())
         self.show()
-
-
-
 
         widget.setLayout(commandsVBox)
 
@@ -94,60 +99,48 @@ class App(QMainWindow):
         vLayout = QVBoxLayout(self)
         vLayout.addWidget(scroll)
         self.setLayout(vLayout)
+        outtermostVBox.addLayout(vLayout)
+        self.hbox.addLayout(outtermostVBox)
 
-
-        ipLineEdit = QLineEdit()
-        ipLineEdit.setText(self.IPAddr)
-
-        portLineEdit = QLineEdit()
-        portLineEdit.setText(self.port)
-
-        settingHBox = QHBoxLayout()
-        flo = QFormLayout()
-        flo.addRow("IP Address", ipLineEdit)
-        flo.addRow("Port", portLineEdit)
-        ipLineEdit.setMaxLength(15)
-        # ipLineEdit.setFixedWidth(120)
-        portLineEdit.setMaxLength(5)
-        # portLineEdit.setFixedWidth(120)
-        connectionVbox = QVBoxLayout()
-        connectButton = QPushButton("Connect")
-        connectButton.clicked.connect(self.connectClicked)
-        disconnectButton = QPushButton("Disconnect")
-        disconnectButton.clicked.connect(self.disconnectClicked)
-        connectionVbox.addWidget(connectButton)
-        connectionVbox.addWidget(disconnectButton)
-        connectionVbox.addStretch(1)
-        settingHBox.addLayout(flo)
-        settingHBox.addLayout(connectionVbox)
-
-
-
-
-        self.rightSide = QVBoxLayout()
-        self.rightSide.addLayout(settingHBox)
-
-        self.hbox.addLayout(vLayout)
+        # self.rightSide = QVBoxLayout()
+        #
+        # self.hbox.addLayout(vLayout)
 
         #self.hbox.addLayout(self.commandsVBox)
-        self.hbox.addSpacing(15)
-        self.hbox.addLayout(self.rightSide)
+        # self.hbox.addSpacing(15)
+        # self.hbox.addLayout(self.rightSide)
 
-        traceVBox = QVBoxLayout()
         w = QWidget()
-        w.resize(420, 200)
+        w.resize(300, 200)
         receiveBox = QPlainTextEdit(w)
-        receiveBox.setPlainText('Hello\rWorld')
+        receiveBox.setPlainText('Receiving\rstuff')
         receiveBox.setReadOnly(True)
         receiveBox.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
+        receiveVBox = QVBoxLayout()
+        receiveVBox.addWidget(QLabel('Receive'))
+        receiveVBox.addWidget(receiveBox)
+
         transmitBox = QPlainTextEdit(w)
+        transmitBox.setPlainText('transmitting\rstuff')
         transmitBox.setReadOnly(True)
         transmitBox.setTextInteractionFlags(Qt.TextSelectableByMouse | Qt.TextSelectableByKeyboard)
-        traceVBox.addWidget(QLabel('Receive'))
-        traceVBox.addWidget(receiveBox)
-        traceVBox.addWidget(QLabel('Transmit'))
-        traceVBox.addWidget(transmitBox)
-        self.rightSide.addLayout(traceVBox)
+        transmitVBox = QVBoxLayout()
+        transmitVBox.addWidget(QLabel('Transmit'))
+        transmitVBox.addWidget(transmitBox)
+
+        splitter1 = QSplitter()
+
+        splitter1.setStyleSheet("handle{image:url(icons\\threedotvertical.png)} "
+                                "handle:horizontal{width: 2px}"
+                                "handle:vertical{height: 2px}")
+        splitter1.addWidget(QPushButton("hello"))
+        splitter1.addWidget(QPushButton("world"))
+        traceHBox = QHBoxLayout()
+        traceHBox.addWidget(splitter1)
+        # traceHBox.addLayout(receiveVBox)
+        # traceHBox.addLayout(transmitVBox)
+
+        outtermostVBox.addLayout(traceHBox)
 
         self.initializeToolBar()
 
@@ -180,11 +173,34 @@ class App(QMainWindow):
         saveFileAction.setStatusTip('Save Emulator File')
         saveFileAction.triggered.connect(self.saveFileClicked)
 
+        # IP AND PORT Label and LineEdit
+        #########################################################################################################
+        ipAddressLabel = QLabel("IP Address:")
+        ipAddressLineEdit = QLineEdit()
+        ipAddressLineEdit.setMaxLength(15)
+        ipAddressLineEdit.setFixedWidth(120)
+        ipPortLabel = QLabel("Port:")
+        ipPortLineEdit = QLineEdit()
+        ipPortLineEdit.setMaxLength(5)
+        ipPortLineEdit.setFixedWidth(120)
+        connectButton = QPushButton("Connect")
+        disconnectButton = QPushButton("Disconnect")
+        connectButton.clicked.connect(self.connectClicked)
+        disconnectButton.clicked.connect(self.disconnectClicked)
+
+        #########################################################################################################
         toolbar = self.addToolBar('Add Command')
         toolbar.addAction(addCommandAction)
         toolbar.addAction(removeCommandAction)
         toolbar.addAction(openFileAction)
         toolbar.addAction(saveFileAction)
+        toolbar.addWidget(ipAddressLabel)
+        toolbar.addWidget(ipAddressLineEdit)
+        toolbar.addWidget(ipPortLabel)
+        toolbar.addWidget(ipPortLineEdit)
+        toolbar.addWidget(connectButton)
+        toolbar.addWidget(disconnectButton)
+        toolbar.setStyleSheet("QLabel{margin-left:5px} QPushButton{margin-left:5px;padding:4px}")
 
     def stateButtonClicked(self):
         print(self.sender().text())
@@ -227,7 +243,6 @@ class App(QMainWindow):
         json_parser_obj.storeModelsAndCommands()
         json_parser_obj.storePortAndType()
 
-
         self.commandStateDict = json_parser_obj.commands
         # Remove Connection Status key
         del self.commandStateDict['Connection Status']
@@ -242,14 +257,14 @@ class App(QMainWindow):
             self.setWindowTitle('UDP Emulator')
 
         self.label.clear()
-        self.createSettings()
+        self.create_main_layout()
 
-    def closeEvent(self, event):
-        reply = QMessageBox.question(self, 'Quit', "Are you sure to quit?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if reply == QMessageBox.Yes:
-            event.accept()
-        else:
-            event.ignore()
+    # def closeEvent(self, event):
+    #     reply = QMessageBox.question(self, 'Quit', "Are you sure to quit?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+    #     if reply == QMessageBox.Yes:
+    #         event.accept()
+    #     else:
+    #         event.ignore()
 
 
 class Label(QLabel):
