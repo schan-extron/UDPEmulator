@@ -37,10 +37,11 @@ class App(QMainWindow):
         self.hbox.addWidget(self.label)
         self.setCentralWidget(self.widget)
 
-    def createSettings(self):
+    def create_main_layout(self):
         self.setAcceptDrops(False)
 
         # Create combo box for HTTP request type
+        #TODO not used right now
         self.dropdownBox = QComboBox()
         self.dropdownBox.addItems(['GET', 'POST', 'PUT'])
 
@@ -58,22 +59,28 @@ class App(QMainWindow):
             if type(self.commandStateDict[command]) is dict:
                 print(command + ' has a dict')
             else:
-                commandLabel = QLabel(command)
-                commandLabel.setFixedWidth(300)
-                commandsVBox.addWidget(commandLabel)
-                #commandsVBox.addWidget(QLineEdit())
+                commandPushButton = QPushButton(command)
+                commandsVBox.addWidget(commandPushButton)
 
-                tempStateList = self.commandStateDict[command]
+                radiolayout = QHBoxLayout()
+                radioGroupBox = QGroupBox()
+                for state in self.commandStateDict[command]:
+                    radioBtn = QRadioButton(state)
+                    radioGroupBox
+                    # radioGroup.addAction(radioBtn)
+                    radiolayout.addWidget(radioBtn)
+                commandsVBox.addLayout(radiolayout)
 
-                buttonGroup = QButtonGroup()
-                buttonGroup.setExclusive(True)
-                for state in range(0, len(tempStateList)):
-                    button = QPushButton(tempStateList[state], checkable=True)
-                    self.saveStateButton(command + tempStateList[state], button)
-
-                    buttonGroup.addButton(button)
-                    button.clicked.connect(lambda: self.stateButtonClicked())
-                    commandsVBox.addWidget(button)
+                # buttonGroup = QButtonGroup()
+                # buttonGroup.setExclusive(True)
+                # for state in range(0, len(tempStateList)):
+                #     RadioButtonState = QRadioButton(tempStateList[state])
+                # #     # self.saveStateButton(command + tempStateList[state], RadioButtonState)
+                # #
+                #     # buttonGroup.addButton(RadioButtonState)
+                # #     RadioButtonState.clicked.connect(lambda: self.stateButtonClicked())
+                #     radiolayout.addWidget(RadioButtonState)
+                # commandsVBox.addWidget(radiolayout)
 
                 #commandsVBox.addWidget(buttonGroup)
                 #buttonGroup.buttonClicked(lambda: self.stateButtonClicked())
@@ -123,7 +130,9 @@ class App(QMainWindow):
 
         splitter1 = QSplitter()
 
-        splitter1.setStyleSheet("handle{image:url(icons\\dottedline.png)}")
+        splitter1.setStyleSheet("handle{image:url(icons\\threedotvertical.png)} "
+                                "handle:horizontal{width: 2px}"
+                                "handle:vertical{height: 2px}")
         splitter1.addWidget(QPushButton("hello"))
         splitter1.addWidget(QPushButton("world"))
         traceHBox = QHBoxLayout()
@@ -248,7 +257,7 @@ class App(QMainWindow):
             self.setWindowTitle('UDP Emulator')
 
         self.label.clear()
-        self.createSettings()
+        self.create_main_layout()
 
     # def closeEvent(self, event):
     #     reply = QMessageBox.question(self, 'Quit', "Are you sure to quit?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
