@@ -53,7 +53,9 @@ class App(QMainWindow):
 
         # Layout of Container Widget
         commandsVBox = QVBoxLayout(self)
-        # buttonsLayoutWidget = QGridLayout()
+        commandsVBox.size
+
+        self.RadioButtonGroup = dict()
 
         for command in self.listOfCommands:
             if type(self.commandStateDict[command]) is dict:
@@ -62,28 +64,15 @@ class App(QMainWindow):
                 commandPushButton = QPushButton(command)
                 commandsVBox.addWidget(commandPushButton)
 
+                self.RadioButtonGroup[command] = QButtonGroup()
                 radiolayout = QHBoxLayout()
-                radioGroupBox = QGroupBox()
                 for state in self.commandStateDict[command]:
                     radioBtn = QRadioButton(state)
-                    radioGroupBox
-                    # radioGroup.addAction(radioBtn)
+                    self.RadioButtonGroup[command].addButton(radioBtn)
                     radiolayout.addWidget(radioBtn)
                 commandsVBox.addLayout(radiolayout)
 
-                # buttonGroup = QButtonGroup()
-                # buttonGroup.setExclusive(True)
-                # for state in range(0, len(tempStateList)):
-                #     RadioButtonState = QRadioButton(tempStateList[state])
-                # #     # self.saveStateButton(command + tempStateList[state], RadioButtonState)
-                # #
-                #     # buttonGroup.addButton(RadioButtonState)
-                # #     RadioButtonState.clicked.connect(lambda: self.stateButtonClicked())
-                #     radiolayout.addWidget(RadioButtonState)
-                # commandsVBox.addWidget(radiolayout)
-
-                #commandsVBox.addWidget(buttonGroup)
-                #buttonGroup.buttonClicked(lambda: self.stateButtonClicked())
+                self.RadioButtonGroup[command].buttonClicked(lambda: self.stateButtonClicked())
         self.show()
 
         widget.setLayout(commandsVBox)
