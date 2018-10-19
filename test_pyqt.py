@@ -53,7 +53,6 @@ class App(QMainWindow):
 
         # Layout of Container Widget
         commandsVBox = QVBoxLayout(self)
-        commandsVBox.size
 
         self.RadioButtonGroup = dict()
 
@@ -63,19 +62,20 @@ class App(QMainWindow):
             else:
                 commandPushButton = QPushButton(command)
                 commandsVBox.addWidget(commandPushButton)
-
                 self.RadioButtonGroup[command] = QButtonGroup()
                 radiolayout = QHBoxLayout()
                 for state in self.commandStateDict[command]:
                     radioBtn = QRadioButton(state)
-                    self.RadioButtonGroup[command].addButton(radioBtn)
+                    radioBtn.toggled.connect(lambda: self.stateButtonClicked())
                     radiolayout.addWidget(radioBtn)
+
                 commandsVBox.addLayout(radiolayout)
 
-                self.RadioButtonGroup[command].buttonClicked(lambda: self.stateButtonClicked())
-        self.show()
-
         widget.setLayout(commandsVBox)
+
+        # Response Strings Box
+        responseStringsVBox = QVBoxLayout(self)
+        widget.setLayout(responseStringsVBox)
 
         # Scroll Area Properties
         scroll = QScrollArea()
@@ -215,6 +215,7 @@ class App(QMainWindow):
         pass
 
     def saveFileClicked(self):
+        print('Test Save Click')
         pass
 
     def dragEnterEvent(self, event):
